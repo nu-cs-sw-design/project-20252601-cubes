@@ -1,2 +1,10 @@
 @startuml
+
+package presentation {
+}
+package domain {
+}
+package data {
+}
+
 @enduml
