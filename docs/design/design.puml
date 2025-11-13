@@ -3,6 +3,21 @@
 package presentation {
 }
 package domain {
+    class Word {
+    }
+    class Letter {
+    }
+    class Guess {
+    }
+    abstract class WordleGameEngine {
+    }
+    class StandardWordle extends WordleGameEngine {
+    }
+    class GameState {
+    }
+    class WordValidator {
+    }
+
 }
 package data {
 }
