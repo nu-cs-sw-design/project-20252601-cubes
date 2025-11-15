@@ -1,6 +1,17 @@
 @startuml
 
 package presentation {
+    class GameView {}
+    class KeyboardView {}
+    class AnimationView {}
+    class MainMenuView {}
+    class StatsView {}
+    class SettingsView {}
+
+    class GameController {}
+    class InputController {}
+    class MenuController {}
+    class AnimationController {}
 }
 package domain {
     class Word {
