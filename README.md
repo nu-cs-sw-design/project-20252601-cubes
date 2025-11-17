@@ -1,7 +1,7 @@
 # Project: NAME
 
 ## Contributors
-NAME, NAME, NAME
+Elizabeth Park, Danny Kim, James Kim
 
 ## Dependencies
 - LANGUAGE AND VERSION

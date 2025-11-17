@@ -1,13 +1,6 @@
 @startuml
 
 package presentation {
-    package model {
-    }
-    package controller {
-    }
-    package view {
-    }
-
 }
 package domain {
     class Word {
@@ -24,10 +17,9 @@ package domain {
     }
     class WordValidator {
     }
+
 }
 package data {
-    class WordRepository {
-    }
 }
 
 @enduml
