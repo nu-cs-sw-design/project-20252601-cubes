@@ -1,0 +1,59 @@
+.body {
+    margin: 0;
+    background: black;
+}
+
+#board {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+    
+}
+
+.tile {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #d3d6da;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+}
+.keyboard {
+    margin-top: 10rem;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.key {
+    width: 3.5rem;
+    height: 4.5rem;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #d3d6da;
+    color: black;
+
+}
+
+.key-wide {
+    width: 5.5rem;
+    height: 4.5rem;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #d3d6da;
+    color: black;
+}
