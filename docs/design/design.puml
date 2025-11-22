@@ -85,6 +85,40 @@ package domain {
 
 }
 package data {
+    class WordRepository {
+        + getRandomWord(length:int): String
+        + getDailyWord(): String
+        + getThemedWord(theme:String): String
+        + isValidWord(wordText:String): boolean
+    }
+
+    class GameStateRepository {
+        + save(state:domain.GameState)
+        + load(): domain.GameState
+        + hasSavedGame(): boolean
+    }
+
+    class StatisticsRepository {
+        + saveStats()
+        + loadStats()
+    }
+
+    class SettingsRepository {
+            + saveSettings()
+            + loadSettings()
+    }
+
+     class DataManager {
+        - wordRepo: WordRepository
+        - gameStateRepo: GameStateRepository
+        - statsRepo: StatisticsRepository
+        - settingsRepo: SettingsRepository
+
+        + getNewTargetWord(mode:String, theme:String, length:int): String
+        + saveGame(state:domain.GameState)
+        + loadGame(): domain.GameState
+        }
 }
+GameController --> data.DataManager
 
 @enduml

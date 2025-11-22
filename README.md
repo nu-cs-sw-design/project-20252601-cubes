@@ -1,4 +1,4 @@
-# Project: NAME
+# Project: WORDLE
 
 ## Contributors
 Elizabeth Park, Danny Kim, James Kim
@@ -10,3 +10,6 @@ Elizabeth Park, Danny Kim, James Kim
 
 ## Build Instructions
 HOW TO BUILD YOUR PROJECT.
+
+- Run npm install
+- Run npm run dev and follow localhost:3000
