@@ -69,21 +69,43 @@ package presentation {
  AnimationController --> KeyboardView
 package domain {
     class Word {
+        - text:String
     }
     class Letter {
+        - value:char
+        - position:int
     }
     class Guess {
+        - letters: List<Letter>
+        - isCorrect:boolean
     }
     abstract class WordleGameEngine {
+        - targetWord: Word
+        - validator: WordValidator
+        - gameState: GameState
+
+        + processGuess(guessText:String): Guess
+        + useHint(): Letter
     }
     class StandardWordle extends WordleGameEngine {
     }
     class GameState {
+        - guesses: List<Guess>
+        - remainingAttempts:int
+        + addGuess(guess:Guess)
+        + isGameOver():boolean
     }
     class WordValidator {
+        + isValidWord(wordText:String):boolean
+        + isCorrectLength(wordText:String, length:int):boolean
     }
 
 }
+GameController --> domain.WordleGameEngine
+GameController --> domain.GameState
+
+domain.WordleGameEngine --> data.DataManager : uses
+
 package data {
     class WordRepository {
         + getRandomWord(length:int): String
