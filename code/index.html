@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Wordle Plus</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <h1 class="title">WORDLE+</h1>
+        <div class="header-controls">
+          <div class="select-group">
+            <label for="wordLengthSelect">Word Length</label>
+            <select id="wordLengthSelect">
+              <option value="4">4 letters</option>
+              <option value="5" selected>5 letters</option>
+              <option value="6">6 letters</option>
+            </select>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="hardModeToggle" />
+            <span>Hard Mode</span>
+          </label>
+          <button id="statsButton" class="icon-button">📊</button>
+          <button id="settingsButton" class="icon-button">⚙️</button>
+        </div>
+      </header>
+
+      <main>
+        <section id="gameSection">
+          <div id="messageBar" class="message-bar"></div>
+          <div id="boardContainer" class="board"></div>
+
+          <div class="game-actions">
+            <button id="hintButton" class="primary">Hint (1 per game)</button>
+            <button id="newGameButton">New Game</button>
+            <button id="shareButton">Share</button>
+          </div>
+
+          <div id="keyboard" class="keyboard"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Definition Card -->
+    <div id="definitionCard" class="modal hidden">
+      <div class="modal-content definition-card">
+        <div class="modal-header">
+          <h2 id="definitionWord"></h2>
+          <button class="close-button" data-close-definition>&times;</button>
+        </div>
+        <p id="definitionPhonetic" class="definition-phonetic"></p>
+        <p id="definitionMeta" class="definition-meta"></p>
+        <p id="definitionText" class="definition-text"></p>
+        <p id="definitionExample" class="definition-example"></p>
+        <div class="definition-actions">
+          <button id="definitionLearnMore" target="_blank">Learn More</button>
+          <button data-close-definition>Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal hidden">
+      <div class="modal-content stats-card">
+        <div class="modal-header">
+          <h2>Statistics</h2>
+          <button class="close-button" data-close-stats>&times;</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-value" id="statTotalGames">0</span>
+            <span class="stat-label">Games Played</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="statTotalWins">0</span>
+            <span class="stat-label">Wins</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="statCurrentStreak">0</span>
+            <span class="stat-label">Current Streak</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="statMaxStreak">0</span>
+            <span class="stat-label">Max Streak</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="statAvgStreak">0</span>
+            <span class="stat-label">Average Streak</span>
+          </div>
+        </div>
+
+        <h3>By Word Length</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Length</th>
+              <th>Games</th>
+              <th>Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>4</td>
+              <td id="stat4Games">0</td>
+              <td id="stat4Wins">0</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td id="stat5Games">0</td>
+              <td id="stat5Wins">0</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td id="stat6Games">0</td>
+              <td id="stat6Wins">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-content settings-card">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="close-button" data-close-settings>&times;</button>
+        </div>
+        <div class="settings-item">
+          <label class="toggle">
+            <input type="checkbox" id="darkModeToggle" />
+            <span>Dark Mode</span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <label class="toggle">
+            <input type="checkbox" id="colorBlindToggle" />
+            <span>Color Blind Mode</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

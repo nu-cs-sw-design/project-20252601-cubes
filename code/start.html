@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel = "stylesheet" href = "startstyles.css">
-        <title>
-            Wordle
-        </title>
-    </head>
-    <body>
-        <div class ="container">
-            <h1>BIRDLE</h1>
-            <div class ="text-box">
-                <p>Select a word length to begin...</p>
-                <p>This is a very important choice!</p>
-                <p>The longer the word, the harder the game!</p>
-                <p>Good luck and have fun!</p>  
-            </div>
+  <head>
+    <link rel="stylesheet" href="startstyles.css" />
+    <title>Wordle</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="theme-checkbox">
+          <input type="checkbox" id="theme-checkbox" />
+          <div class="slider"></div>
+        </label>
+      </div>
 
+      <h1>BIRDLE</h1>
+      <div class="text-box">
+        <p>Select a word length to begin...</p>
+        <p>This is a very important choice!</p>
+        <p>The longer the word, the harder the game!</p>
+        <p>Good luck and have fun!</p>
+      </div>
 
-            <select id = "wordLength">
-                <option value="4">4</option>
-                <option value="5" selected>5 (default)</option>
-                <option value="6">6</option>
-                </select>
-                <br>
-            <button class="start-btn" onclick ="startGame()">Start Game</button>
-        </div>
-    </body>
+      <div class="start-menu">
+        <select id="wordLength">
+          <option value="4">4</option>
+          <option value="5" selected>5 (default)</option>
+          <option value="6">6</option>
+        </select>
+
+        <button class="start-btn" onclick="startGame()">Start Game</button>
+      </div>
+    </div>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const themeCheckbox = document.getElementById("theme-checkbox");
+        const body = document.body;
+        themeCheckbox.addEventListener("change", () => {
+          body.classList.toggle("light-mode", themeCheckbox.checked);
+        });
+      });
+    </script>
+  </body>
+</html>
