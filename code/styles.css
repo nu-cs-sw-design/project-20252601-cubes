@@ -1,59 +1,65 @@
-.body {
-    margin: 0;
-    background: black;
+/* Keyboard Container */
+#keyboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-#board {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center;
-    
-}
- 
-.tile {
-    width: 60px;
-    height: 60px;
-    border: 2px solid #d3d6da;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: white;
-}
-.keyboard {
-    margin-top: 10rem;
-    display:flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+/* Fix for row divs - make them flex containers */
+#keyboard-container > div {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
 }
 
-.key {
-    width: 3.5rem;
-    height: 4.5rem;
-    padding: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    background-color: #d3d6da;
-    color: black;
-
+/* Regular Keyboard Buttons */
+.keyboard-button {
+  flex: 1;
+  min-width: 30px;
+  max-width: 50px;
+  height: 58px;
+  border: none;
+  border-radius: 4px;
+  background-color: #d3d6da;
+  color: #000000;
+  font-size: 13.5px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.key-wide {
-    width: 5.5rem;
-    height: 4.5rem;
-    padding: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    background-color: #d3d6da;
-    color: black;
+/* Enter and Backspace Buttons */
+.keyboard-button-double {
+  flex: 1.5;
+  min-width: 60px;
+  max-width: 80px;
+  height: 58px;
+  border: none;
+  border-radius: 4px;
+  background-color: #d3d6da;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover and Active States */
+.keyboard-button:hover,
+.keyboard-button-double:hover {
+  background-color: #bfc2c6;
+}
+
+.keyboard-button:active,
+.keyboard-button-double:active {
+  background-color: #a8abb0;
 }
