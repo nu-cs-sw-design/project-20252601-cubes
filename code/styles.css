@@ -1,15 +1,94 @@
-/* Keyboard Container */
+/* Global styles */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+}
+
+/* Header styles */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+#streak-container {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.menu-bar-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.menu-bar-buttons button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.menu-bar-buttons button:hover {
+  opacity: 0.7;
+}
+
+/* Title */
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 10px 0 30px 0;
+  letter-spacing: 0.2rem;
+}
+
+/* Grid styles */
+#grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 30px;
+}
+
+.grid-row {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.grid-tile {
+  width: 62px;
+  height: 62px;
+  border: 2px solid #d3d6da;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
 #keyboard-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   padding: 10px;
-  max-width: 500px;
+  width: 500px;
   margin: 0 auto;
 }
 
-/* Fix for row divs - make them flex containers */
 #keyboard-container > div {
   display: flex;
   gap: 6px;
@@ -17,11 +96,8 @@
   width: 100%;
 }
 
-/* Regular Keyboard Buttons */
 .keyboard-button {
-  flex: 1;
-  min-width: 30px;
-  max-width: 50px;
+  width: 43px;
   height: 58px;
   border: none;
   border-radius: 4px;
@@ -33,13 +109,18 @@
   text-transform: uppercase;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.1s;
 }
 
-/* Enter and Backspace Buttons */
+.keyboard-button:hover,
+.keyboard-button-double:hover {
+  background-color: #c4c5c6;
+  transform: scale(1.05);
+  transition: all 0.1s ease;
+}
+
 .keyboard-button-double {
-  flex: 1.5;
-  min-width: 60px;
-  max-width: 80px;
+  width: 65px;
   height: 58px;
   border: none;
   border-radius: 4px;
@@ -51,15 +132,5 @@
   text-transform: uppercase;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* Hover and Active States */
-.keyboard-button:hover,
-.keyboard-button-double:hover {
-  background-color: #bfc2c6;
-}
-
-.keyboard-button:active,
-.keyboard-button-double:active {
-  background-color: #a8abb0;
+  transition: background-color 0.1s;
 }
