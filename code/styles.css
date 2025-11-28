@@ -134,3 +134,94 @@ h1 {
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.1s;
 }
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.tile-pop {
+  animation: pop 0.1s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-3px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(3px);
+  }
+}
+#toast-container {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column; /* Stack toasts vertically */
+  align-items: center;
+  width: auto;
+}
+
+.toast {
+  background-color: #1a1a1b;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px; /* Space between toasts */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  white-space: nowrap;
+
+  /* Animation for new toasts */
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideIn 0.3s ease forwards;
+}
+
+.toast.fade-out {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
