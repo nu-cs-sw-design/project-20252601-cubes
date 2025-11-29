@@ -4,6 +4,8 @@ class Wordle {
     this.maxAttempts = 6;
     this.currentRow = 0;
     this.currentCol = 0;
+    this.validWords = ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"];
+    this.targetWord = "APPLE";
     this.gameOver = false;
     this.gridContainer = document.getElementById("grid-container");
     this.createGrid();
@@ -109,9 +111,12 @@ class Wordle {
 
     this.currentRow++;
     this.currentCol = 0;
+
     if (this.currentRow >= this.maxAttempts) {
       this.gameOver = true;
-      this.showToast("Game Over! The word was APPLE", 4000);
+      setTimeout(() => {
+        this.showToast(`Game Over! The word was ${this.targetWord}`, 5000);
+      }, 1500);
     }
   }
   getTile(row, col) {
@@ -129,6 +134,36 @@ class Wordle {
     }, 500);
   }
 
+  evaluateGuess(guess) {
+    const targetCounts = {};
+    for (const letter of this.targetWord) {
+      targetCounts[letter] = (targetCounts[letter] || 0) + 1;
+    }
+
+    const evaluation = Array(this.wordLength).fill(null);
+
+    for (let i = 0; i < this.wordLength; i++) {
+      if (guess[i] === this.targetWord[i]) {
+        evaluation[i] = "correct";
+        targetCounts[guess[i]]--;
+      }
+    }
+    for (let i = 0; i < this.wordLength; i++) {
+      if (evaluation[i] === "correct") continue;
+      const letter = guess[i];
+      if (this.targetWord.includes(letter) && targetCounts[letter] > 0) {
+        evaluation[i] = "present";
+        targetCounts[letter]--;
+      } else {
+        evaluation[i] = "absent";
+      }
+    }
+    for (let i = 0; i < this.wordLength; i++) {
+      const tile = this.getTile(this.currentRow, i);
+      const letter = guess[i];
+      const status = evaluation;
+    }
+  }
   showToast(message, duration = 2000) {
     const toastContainer = document.getElementById("toast-container");
     const existingToast = toastContainer.querySelectorAll(".toast");
