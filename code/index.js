@@ -425,7 +425,7 @@ class Wordle {
         count.textContent = guessCount;
         const widthPercent =
           guessCount > 0 ? Math.max((guessCount / maxGuesses) * 100, 7) : 7;
-        bar.style.width = `${widthPercent}%`;
+        bar.stle.width = `${widthPercent}%`;
 
         if (this.lastWinGuesses === i && guessCount > 0) {
           bar.style.backgroundColor = this.highContrastMode
@@ -457,5 +457,23 @@ class Wordle {
       }, 500);
     }, duration);
   }
+
+  updateModeDispaly() {
+    const modeDisplay = document.getElementById("mode-display");
+    if (modeDisplay) {
+      modeDisplay.textContent = `${this.wordLength} Letters`;
+    }
+  }
+
+  createHintButton() {
+    const hintButton = document.getElementById("hint-button");
+    if (hintButton) {
+      hintButton.addEventListener("click", () => {
+        this.useHint();
+      });
+    }
+  }
+
+  useHint() {}
 }
 const wordleGame = new Wordle(5);
