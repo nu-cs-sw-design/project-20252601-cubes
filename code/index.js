@@ -1,13 +1,52 @@
 class Wordle {
   constructor(wordLength) {
-    this.wordLength = wordLength;
-    this.maxAttempts = 6;
+    // Parse URL parameters for game mode (if any)
+    const urlParams = new URLSearchParams(window.location.search);
+    const modeFromURL = urlParams.get("mode");
+
+    this.wordLength = modeFromURL ? parseInt(modeFromURL) : wordLength;
+    this.maxAttempts = 6; //max attemps for guessing (can be changed later)
     this.currentRow = 0;
     this.currentCol = 0;
-    this.validWords = ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"];
-    this.targetWord = "APPLE";
+
+    this.modeKey = `wordle_${this.wordLength}`;
+    this.wordList = { 5: ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"] };
+    this.validWords = this.wordList[this.wordLength] || this.wordList[5];
+    this.targetWord =
+      this.validWords[Math.floor(Math.random() * this.validWords.length)]; //get random word
     this.gameOver = false;
+    this.guessedWords = [];
+    this.keyboardStatus = {};
+
+    //streak
+    this.currentStreak =
+      pareseInt(localStorage.getItem(`${this.modeKey}_streak`)) || 0;
+    this.maxStreak =
+      pareseInt(localStorage.getItem(`${this.modeKey}_maxStreak`)) || 0;
+
+    //settings
+    this.darkMode = localStorage.getItem("wordleDarkMode") === "true";
+    this.highContrastMode =
+      localStorage.getItem("wordleHighContrastMode") === "true";
+
+    //stats
+    this.gamePlayed =
+      pareseInt(localStorage.getItem(`${this.modeKey}_gamesPlayed`)) || 0;
+    this.gamesWon =
+      pareseInt(localStorage.getItem(`${this.modeKey}_gamesWon`)) || 0;
+    this.guessDistribution = JSON.parse(
+      localStorage.getItem(`${this.modeKey}_guessDistribution`)
+    ) || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+    this.lastWinGuesses =
+      pareseInt(localStorage.getItem(`${this.modeKey}_lastWinGuesses`)) || 0;
+
+    //hint
+    this.hintUsed = false;
+    this.hintLetter = null;
+
     this.gridContainer = document.getElementById("grid-container");
+    this.gridContainer.innerHTML = "";
+
     this.createGrid();
     this.initializeKeyboard();
   }
