@@ -391,6 +391,53 @@ class Wordle {
     }
   }
 
+  updateStatsDisplay() {
+    const statPlayed = document.getElementById("stat-played");
+    const statWinPercent = document.getElementById("stat-win-percent");
+    const statCurrentStreak = document.getElementById("stat-current-streak");
+    const statMaxStreak = document.getElementById("stat-max-streak");
+
+    if (statPlayed) {
+      statPlayed.textContent = this.gamesPlayed;
+    }
+    if (statWinPercent) {
+      const winPercent =
+        this.gamesPlayed > 0
+          ? Math.round((this.gamesWon / this.gamesPlayed) * 100)
+          : 0;
+      statWinPercent.textContent = `${winPercent}%`;
+    }
+    if (statCurrentStreak) {
+      statCurrentStreak.textContent = this.currentStreak;
+    }
+    if (statMaxStreak) {
+      statMaxStreak.textContent = this.maxStreak;
+    }
+
+    const maxGuesses = Math.max(...Object.values(this.guessDistribution), 1);
+
+    for (let i = 1; i <= 6; i++) {
+      const bar = document.getElementById(`guess-bar-${i}`);
+      const count = document.getElementById(`guess-count-${i}`);
+      const guessCount = this.guessDistribution[i] || 0;
+
+      if (bar && count) {
+        count.textContent = guessCount;
+        const widthPercent =
+          guessCount > 0 ? Math.max((guessCount / maxGuesses) * 100, 7) : 7;
+        bar.style.width = `${widthPercent}%`;
+
+        if (this.lastWinGuesses === i && guessCount > 0) {
+          bar.style.backgroundColor = this.highContrastMode
+            ? "#f5793a"
+            : "#6aaa64";
+        } else {
+          bar.style.backgroundColor = "#787c7e";
+        }
+      }
+    }
+  }
+
   showToast(message, duration = 2000) {
     const toastContainer = document.getElementById("toast-container");
     const existingToast = toastContainer.querySelectorAll(".toast");
