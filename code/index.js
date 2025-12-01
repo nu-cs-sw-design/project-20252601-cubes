@@ -130,7 +130,17 @@ class Wordle {
   submitGuess() {
     if (this.currentCol !== this.wordLength) {
       this.showToast("Not enough letters");
-      this.shakeRow();
+      const tiles = document.querySelectorAll(
+        `[data-row='${this.currentRow}']`
+      );
+      tiles.forEach((tile) => {
+        tile.style.animation = "shake 0.5s";
+      });
+      setTimeout(() => {
+        tiles.forEach((tile) => {
+          tile.style.animation = "";
+        });
+      }, 500);
       return;
     }
 
@@ -141,46 +151,48 @@ class Wordle {
     }
 
     console.log("Submitted guess:", guess);
-    const validWords = ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"];
-    if (!validWords.includes(guess)) {
+
+    //green
+    if (!this.validWords.includes(guess)) {
       this.showToast("Not in word list");
-      this.shakeRow();
+      const tiles = document.querySelectorAll(
+        `[data-row='${this.currentRow}']`
+      );
+      tiles.forEach((tile) => {
+        tile.style.animation = "shake 0.5s";
+      });
+      setTimeout(() => {
+        tiles.forEach((tile) => {
+          tile.style.animation = "";
+        });
+      }, 500);
       return;
     }
 
-    this.currentRow++;
-    this.currentCol = 0;
-
-    if (this.currentRow >= this.maxAttempts) {
-      this.gameOver = true;
-      setTimeout(() => {
-        this.showToast(`Game Over! The word was ${this.targetWord}`, 5000);
-      }, 1500);
-    }
-  }
-  getTile(row, col) {
-    return document.querySelector(`[data-row='${row}'][data-col='${col}']`);
-  }
-  shakeRow() {
-    const tiles = document.querySelectorAll(`[data-row='${this.currentRow}']`);
-    tiles.forEach((tile) => {
-      tile.style.animation = "shake 0.5s";
-    });
-    setTimeout(() => {
+    //yellow
+    if (this.guessedWords.includes(guess)) {
+      this.showToast("You already guessed that word");
+      const tiles = document.querySelectorAll(
+        `[data-row='${this.currentRow}']`
+      );
       tiles.forEach((tile) => {
-        tile.style.animation = "";
+        tile.style.animation = "shake 0.5s";
       });
-    }, 500);
-  }
+      setTimeout(() => {
+        tiles.forEach((tile) => {
+          tile.style.animation = "";
+        });
+      }, 500);
+      return;
+    }
+    this.guessedWords.push(guess);
 
-  evaluateGuess(guess) {
     const targetCounts = {};
     for (const letter of this.targetWord) {
       targetCounts[letter] = (targetCounts[letter] || 0) + 1;
     }
 
     const evaluation = Array(this.wordLength).fill(null);
-
     for (let i = 0; i < this.wordLength; i++) {
       if (guess[i] === this.targetWord[i]) {
         evaluation[i] = "correct";
@@ -197,12 +209,176 @@ class Wordle {
         evaluation[i] = "absent";
       }
     }
+
+    const currentRoNum = this.currentRow;
     for (let i = 0; i < this.wordLength; i++) {
-      const tile = this.getTile(this.currentRow, i);
+      const tile = this.getTile(currentRoNum, i);
       const letter = guess[i];
-      const status = evaluation;
+      const status = evaluation[i];
+      setTimeout(() => {
+        tile.classList.add("tile-flip");
+        const correctColor = this.highContrastMode ? "#f5793a" : "#6aaa64";
+        const presentColor = this.highContrastMode ? "#85c0f9" : "#c9b458";
+        const absentColor = "#787c7e";
+
+        setTimeout(() => {
+          if (status === "correct") {
+            tile.style.backgroundColor = correctColor;
+            tile.style.borderColor = correctColor;
+            this.style.color = "white";
+          } else if (status === "present") {
+            tile.style.backgroundColor = presentColor;
+            tile.style.borderColor = presentColor;
+            this.style.color = "white";
+          } else {
+            tile.style.backgroundColor = absentColor;
+            tile.style.borderColor = absentColor;
+            tile.style.color = "white";
+          }
+        }, 250);
+
+        const keyboardButtons = document.querySelectorAll(
+          ".keyboard-button, .keyboard-button-double"
+        );
+        keyboardButtons.forEach((button) => {
+          if (button.textContent === letter) {
+            const currentStatus = this.keyboardStatus[letter];
+            if (status === "correct") {
+              this.keyboardStatus[letter] = "correct";
+              button.style.backgroundColor = correctColor;
+              button.style.color = "white";
+            } else if (status === "present" && currentStatus !== "correct") {
+              this.keyboardStatus[letter] = "present";
+              button.style.backgroundColor = presentColor;
+              button.style.color = "white";
+            } else if (status === "absent" && !currentStatus) {
+              this.keyboardStatus[letter] = "absent";
+              button.style.backgroundColor = absentColor;
+              button.style.color = "white";
+            }
+          }
+        });
+      }, i * 250);
+    }
+    const animationDuration = this.wordLength * 250 + 250;
+
+    if (guess === this.targetWord) {
+      this.gameOver = true;
+      setTimeout(() => {
+        const tiles = document.querySelectorAll(`[data-row='${currentRoNum}']`);
+        tiles.forEach((tile, index) => {
+          setTimeout(() => {
+            tile.classList.add("tile-bounce");
+          }, index * 100);
+        });
+
+        const attemps = currentRoNum + 1;
+        let message = "";
+        if (attemps === 1) {
+          message = "Genius! 1st try!";
+        } else if (attemps === 2) {
+          message = "Magnificent! 2nd try!";
+        } else if (attemps === 3) {
+          message = "Impressive! 3rd try!";
+        } else if (attemps === 4) {
+          message = "Great! 4th try!";
+        } else if (attemps === 5) {
+          message = "Good job! 5th try!";
+        } else {
+          message = "Phew! Made it on the 6th try!";
+        }
+        this.showToast(message, 3000);
+
+        this.gamesPlayed++;
+        this.gamesWon++;
+        this.guessDistribution[attemps] =
+          (this.guessDistribution[attemps] || 0) + 1;
+        this.lastWinGuesses = attemps;
+
+        localStorage.setItem(`${this.modeKey}_gamesPlayed`, this.gamesPlayed);
+        localStorage.setItem(`${this.modeKey}_gamesWon`, this.gamesWon);
+        localStorage.setItem(
+          `${this.modeKey}_guessDistribution`,
+          JSON.stringify(this.guessDistribution)
+        );
+        localStorage.setItem(
+          `${this.modeKey}_lastWinGuesses`,
+          this.lastWinGuesses
+        );
+
+        this.currentStreak++;
+        if (this.currentStreak > this.maxStreak) {
+          this.maxStreak = this.currentStreak;
+          setTimeout(() => {
+            this.showToast(`New max streak: ${this.maxStreak}`, 3000);
+          }, 3500);
+        }
+
+        localStorage.setItem(`${this.modeKey}_streak`, this.currentStreak);
+        localStorage.setItem(`${this.modeKey}_maxStreak`, this.maxStreak);
+        /////////////////
+
+        const gameEndOverlay = document.getElementById("game-end-overlay");
+        const gameEndMessage = document.getElementById("game-end-message");
+        const gameEndWord = document.getElementById("game-end-word");
+        if (gameEndOverlay && gameEndMessage && gameEndWord) {
+          gameEndMessage.textContent = message;
+          gameEndWord.textContent = `The word was: ${this.targetWord}`;
+          gameEndOverlay.style.display = "flex";
+        }
+      }, animationDuration);
+    } else {
+      this.currentRow++;
+      this.currentCol = 0;
+      if (this.currentRow >= this.maxAttempts) {
+        this.gameOver = true;
+        setTimeout(() => {
+          this.showToast(`Game Over! The word was: ${this.targetWord}`, 5000);
+
+          this.gamesPlayed++;
+          this.lastWinGuesses = 0;
+          localStorage.setItem(`${this.modeKey}_gamesPlayed`, this.gamesPlayed);
+          localStorage.setItem(
+            `${this.modeKey}_lastWinGuesses`,
+            this.lastWinGuesses
+          );
+          if (this.currentStreak > 0) {
+            setTimeout(() => {
+              this.showToast(`Streak ended at: ${this.currentStreak}`, 4000);
+            }, 5500);
+          }
+
+          this.currentStreak = 0;
+          localStorage.setItem(`${this.modeKey}_streak`, this.currentStreak);
+          /////////////////
+          const gameEndOverlay = document.getElementById("game-end-overlay");
+          const gameEndMessage = document.getElementById("game-end-message");
+          const gameEndWord = document.getElementById("game-end-word");
+          if (gameEndOverlay && gameEndMessage && gameEndWord) {
+            gameEndMessage.textContent = "Game Over!";
+            gameEndWord.textContent = `The word was: ${this.targetWord}`;
+            gameEndOverlay.style.display = "flex";
+          }
+        }, animationDuration);
+      }
     }
   }
+
+  getTile(row, col) {
+    return document.querySelector(`[data-row='${row}'][data-col='${col}']`);
+  }
+  shakeRow() {
+    const tiles = document.querySelectorAll(`[data-row='${this.currentRow}']`);
+    tiles.forEach((tile) => {
+      tile.style.animation = "shake 0.5s";
+    });
+    setTimeout(() => {
+      tiles.forEach((tile) => {
+        tile.style.animation = "";
+      });
+    }, 500);
+  }
+
   showToast(message, duration = 2000) {
     const toastContainer = document.getElementById("toast-container");
     const existingToast = toastContainer.querySelectorAll(".toast");
