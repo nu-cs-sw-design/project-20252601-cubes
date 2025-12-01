@@ -225,11 +225,11 @@ class Wordle {
           if (status === "correct") {
             tile.style.backgroundColor = correctColor;
             tile.style.borderColor = correctColor;
-            this.style.color = "white";
+            tile.style.color = "white";
           } else if (status === "present") {
             tile.style.backgroundColor = presentColor;
             tile.style.borderColor = presentColor;
-            this.style.color = "white";
+            tile.style.color = "white";
           } else {
             tile.style.backgroundColor = absentColor;
             tile.style.borderColor = absentColor;
