@@ -20,25 +20,25 @@ class Wordle {
 
     //streak
     this.currentStreak =
-      pareseInt(localStorage.getItem(`${this.modeKey}_streak`)) || 0;
+      parseInt(localStorage.getItem(`${this.modeKey}_streak`)) || 0;
     this.maxStreak =
-      pareseInt(localStorage.getItem(`${this.modeKey}_maxStreak`)) || 0;
+      parseInt(localStorage.getItem(`${this.modeKey}_maxStreak`)) || 0;
 
     //settings
     this.darkMode = localStorage.getItem("wordleDarkMode") === "true";
     this.highContrastMode =
-      localStorage.getItem("wordleHighContrastMode") === "true";
+      localStorage.getItem("wordleHighContrast") === "true";
 
     //stats
     this.gamePlayed =
-      pareseInt(localStorage.getItem(`${this.modeKey}_gamesPlayed`)) || 0;
+      parseInt(localStorage.getItem(`${this.modeKey}_gamesPlayed`)) || 0;
     this.gamesWon =
-      pareseInt(localStorage.getItem(`${this.modeKey}_gamesWon`)) || 0;
+      parseInt(localStorage.getItem(`${this.modeKey}_gamesWon`)) || 0;
     this.guessDistribution = JSON.parse(
       localStorage.getItem(`${this.modeKey}_guessDistribution`)
     ) || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
     this.lastWinGuesses =
-      pareseInt(localStorage.getItem(`${this.modeKey}_lastWinGuesses`)) || 0;
+      parseInt(localStorage.getItem(`${this.modeKey}_lastWinGuesses`)) || 0;
 
     //hint
     this.hintUsed = false;
@@ -49,6 +49,12 @@ class Wordle {
 
     this.createGrid();
     this.initializeKeyboard();
+    this.initializeSettings();
+    this.applySettings();
+    this.updateModeDisplay();
+    this.createHintButton();
+    this.updateStreakDisplay();
+    this.updateStatsDisplay();
   }
 
   createGrid() {
@@ -425,7 +431,7 @@ class Wordle {
         count.textContent = guessCount;
         const widthPercent =
           guessCount > 0 ? Math.max((guessCount / maxGuesses) * 100, 7) : 7;
-        bar.stle.width = `${widthPercent}%`;
+        bar.style.width = `${widthPercent}%`;
 
         if (this.lastWinGuesses === i && guessCount > 0) {
           bar.style.backgroundColor = this.highContrastMode
@@ -458,7 +464,7 @@ class Wordle {
     }, duration);
   }
 
-  updateModeDispaly() {
+  updateModeDisplay() {
     const modeDisplay = document.getElementById("mode-display");
     if (modeDisplay) {
       modeDisplay.textContent = `${this.wordLength} Letters`;
@@ -528,6 +534,91 @@ class Wordle {
       `Hint used! The letter "${hintLetter}" is in the word.`,
       2500
     );
+  }
+
+  reapplyColors() {
+    const correctColor = this.highContrastMode ? "#f5793a" : "#6aaa64";
+    const presentColor = this.highContrastMode ? "#85c0f9" : "#c9b458";
+    const hintColor = this.highContrastMode ? "#9d4edd" : "#e85d9a";
+    const absentColor = "#787c7e";
+
+    const allTiles = document.querySelectorAll(".grid-tile");
+    allTiles.forEach((tile) => {
+      const backgroundColor = tile.style.backgroundColor;
+      if (
+        backgroundColor === "rgb(106,170,100)" ||
+        backgroundColor === "rgb(245,121,58)"
+      ) {
+        tile.style.backgroundColor = correctColor;
+        tile.style.borderColor = correctColor;
+      } else if (
+        backgroundColor === "rgb(201,180,88)" ||
+        backgroundColor === "rgb(133,192,249)"
+      ) {
+        tile.style.backgroundColor = presentColor;
+        tile.style.borderColor = presentColor;
+      }
+    });
+
+    // on screen keyboard
+    const keyboardButtons = document.querySelectorAll(
+      ".keyboard-button, .keyboard-button-double"
+    );
+    keyboardButtons.forEach((button) => {
+      const backgroundColor = button.style.backgroundColor;
+      if (
+        backgroundColor === "rgb(106,170,100)" ||
+        backgroundColor === "rgb(245,121,58)"
+      ) {
+        button.style.backgroundColor = correctColor;
+      } else if (
+        backgroundColor === "rgb(201,180,88)" ||
+        backgroundColor === "rgb(133,192,249)"
+      ) {
+        button.style.backgroundColor = presentColor;
+      } else if (
+        backgroundColor === "rgb(157,78,221)" ||
+        backgroundColor === "rgb(232,93,154)"
+      ) {
+        button.style.backgroundColor = hintColor;
+      }
+    });
+  }
+  applySettings() {
+    if (this.darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+
+    if (this.highContrastMode) {
+      document.body.classList.add("high-contrast");
+    } else {
+      document.body.classList.remove("high-contrast");
+    }
+
+    this.reapplyColors();
+  }
+
+  initializeSettings() {
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    const highContrastToggle = document.getElementById("high-contrast-toggle");
+    if (darkModeToggle) {
+      darkModeToggle.checked = this.darkMode;
+      darkModeToggle.addEventListener("change", () => {
+        this.darkMode = darkModeToggle.checked;
+        localStorage.setItem("wordleDarkMode", this.darkMode);
+        this.applySettings();
+      });
+    }
+    if (highContrastToggle) {
+      highContrastToggle.checked = this.highContrastMode;
+      highContrastToggle.addEventListener("change", () => {
+        this.highContrastMode = highContrastToggle.checked;
+        localStorage.setItem("wordleHighContrast", this.highContrastMode);
+        this.applySettings();
+      });
+    }
   }
 }
 
