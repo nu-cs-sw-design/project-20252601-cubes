@@ -474,6 +474,61 @@ class Wordle {
     }
   }
 
-  useHint() {}
+  useHint() {
+    //if hint is already used
+    if (this.hintUsed) {
+      this.showToast("Hint already used this game");
+      return;
+    }
+
+    if (this.gameOver) {
+      this.showToast("Game is over. Cannot use hint.");
+      return;
+    }
+
+    const targetLetters = this.targetWord.split("");
+    const unrevealedLetters = [];
+
+    for (const letter of targetLetters) {
+      const status = this.keyboardStatus[letter];
+      if (status !== "correct" && status !== "present" && status !== "hint") {
+        unrevealedLetters.push(letter);
+      }
+    }
+
+    //when hint would be of no use
+    if (unrevealedLetters.length === 0) {
+      this.showToast("All letters have been revealed!");
+      return;
+    }
+
+    const hintLetter =
+      unrevealedLetters[Math.floor(Math.random() * unrevealedLetters.length)];
+    this.hintLetter = hintLetter;
+    const hintColor = this.highContrastMode ? "#9d4edd" : "#e85d9a";
+    const keyboardButtons = document.querySelectorAll(
+      ".keyboard-button, .keyboard-button-double"
+    );
+    keyboardButtons.forEach((button) => {
+      if (button.textContent === hintLetter) {
+        button.style.backgroundColor = hintColor;
+        button.style.color = "white"; //
+      }
+    });
+
+    this.keyboardStatus[hintLetter] = "hint";
+    this.hintUsed = true;
+    const hintButton = document.getElementById("hint-button");
+    if (hintButton) {
+      hintButton.style.opacity = "0.5";
+      hintButton.style.cursor = "not-allowed";
+    }
+
+    this.showToast(
+      `Hint used! The letter "${hintLetter}" is in the word.`,
+      2500
+    );
+  }
 }
+
 const wordleGame = new Wordle(5);
