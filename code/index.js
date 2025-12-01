@@ -350,7 +350,8 @@ class Wordle {
 
           this.currentStreak = 0;
           localStorage.setItem(`${this.modeKey}_streak`, this.currentStreak);
-          /////////////////
+          this.updateStreakDisplay();
+
           const gameEndOverlay = document.getElementById("game-end-overlay");
           const gameEndMessage = document.getElementById("game-end-message");
           const gameEndWord = document.getElementById("game-end-word");
