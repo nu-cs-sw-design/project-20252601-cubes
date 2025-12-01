@@ -379,6 +379,17 @@ class Wordle {
     }, 500);
   }
 
+  updateStreakDisplay() {
+    const streakCount = document.getElementById("streak-count");
+    if (streakCount) {
+      streakCount.textContent = this.currentStreak;
+    }
+    const maxStreakCount = document.getElementById("max-streak-count");
+    if (maxStreakCount) {
+      maxStreakCount.textContent = this.maxStreak;
+    }
+  }
+
   showToast(message, duration = 2000) {
     const toastContainer = document.getElementById("toast-container");
     const existingToast = toastContainer.querySelectorAll(".toast");
