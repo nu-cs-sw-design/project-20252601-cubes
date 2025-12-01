@@ -3,23 +3,143 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sample HTML Page</title>
+    <title>BIRDLEE</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="game-header">
-      3
-      <div id="streak-container">Streak: <span id="streak-count">0</span></div>
+      <div class="header-left">
+        <a href="start.html" class="back-button" title="Back to Menu">←</a>
+        <span id="mode-display">5 Letters</span>
+      </div>
+      <div id="streak-container">
+        <div class="streak-item">
+          <span class="streak-label">Streak</span>
+          <span class="streak-value" id="streak-count">0</span>
+        </div>
+        <div class="streak-divider"></div>
+        <div class="streak-item">
+          <span class="streak-label">Best</span>
+          <span class="streak-value" id="max-streak-count">0</span>
+        </div>
+      </div>
       <div class="menu-bar-buttons">
         <button id="hint-button">💡</button>
         <button id="settings-button">⚙️</button>
         <button id="stats-button">📊</button>
       </div>
     </header>
-    <h1>BIRDLEEE</h1>
     <div id="toast-container"></div>
-
     <div id="grid-container"></div>
+
+    <div id="game-end-overlay" class="overlay" style="display: none">
+      <div class="overlay-content">
+        <h2 id="game-end-message">Game Over!</h2>
+        <p id="game-end-word"></p>
+        <button id="play-again-button">Play Again</button>
+      </div>
+    </div>
+
+    <div id="settings-overlay" class="overlay" style="display: none">
+      <div class="overlay-content">
+        <button class="close-button" id="close-settings">&times;</button>
+        <h2>Settings</h2>
+        <div class="settings-content">
+          <div class="setting-row">
+            <span class="setting-label">Dark Mode</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="dark-mode-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">High Contrast Mode</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="high-contrast-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stats-overlay" class="overlay" style="display: none">
+      <div class="overlay-content stats-overlay-content">
+        <button class="close-button" id="close-stats">&times;</button>
+        <h2>Statistics</h2>
+        <div class="stats-content">
+          <div class="stats-summary">
+            <div class="stat-item">
+              <span class="stat-value" id="stat-played">0</span>
+              <span class="stat-label">Played</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-win-percent">0</span>
+              <span class="stat-label">Win %</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-current-streak">0</span>
+              <span class="stat-label">Current Streak</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-max-streak">0</span>
+              <span class="stat-label">Max Streak</span>
+            </div>
+          </div>
+          <h3>Guess Distribution</h3>
+          <div class="guess-distribution">
+            <div class="guess-row">
+              <span class="guess-number">1</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-1">
+                  <span class="guess-count" id="guess-count-1">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="guess-row">
+              <span class="guess-number">2</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-2">
+                  <span class="guess-count" id="guess-count-2">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="guess-row">
+              <span class="guess-number">3</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-3">
+                  <span class="guess-count" id="guess-count-3">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="guess-row">
+              <span class="guess-number">4</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-4">
+                  <span class="guess-count" id="guess-count-4">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="guess-row">
+              <span class="guess-number">5</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-5">
+                  <span class="guess-count" id="guess-count-5">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="guess-row">
+              <span class="guess-number">6</span>
+              <div class="guess-bar-container">
+                <div class="guess-bar" id="guess-bar-6">
+                  <span class="guess-count" id="guess-count-6">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="keyboard-container">
       <div id="keyboard-rows-1">
         <button class="keyboard-button">Q</button>
