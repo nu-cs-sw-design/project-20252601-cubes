@@ -10,7 +10,13 @@ class Wordle {
     this.currentCol = 0;
 
     this.modeKey = `wordle_${this.wordLength}`;
-    this.wordList = { 5: ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"] };
+
+    //hard coded for now, can be replaced with API or larger word list later
+    this.wordList = {
+      4: ["ABLE", "BAND", "CART", "DART", "EARN"],
+      5: ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"],
+      6: ["PLANET", "GARDEN", "FAMILY", "MARKET", "BRIDGE"],
+    };
     this.validWords = this.wordList[this.wordLength] || this.wordList[5];
     this.targetWord =
       this.validWords[Math.floor(Math.random() * this.validWords.length)]; //get random word
@@ -30,7 +36,7 @@ class Wordle {
       localStorage.getItem("wordleHighContrast") === "true";
 
     //stats
-    this.gamePlayed =
+    this.gamesPlayed =
       parseInt(localStorage.getItem(`${this.modeKey}_gamesPlayed`)) || 0;
     this.gamesWon =
       parseInt(localStorage.getItem(`${this.modeKey}_gamesWon`)) || 0;
@@ -49,12 +55,12 @@ class Wordle {
 
     this.createGrid();
     this.initializeKeyboard();
-    this.initializeSettings();
-    this.applySettings();
-    this.updateModeDisplay();
-    this.createHintButton();
     this.updateStreakDisplay();
-    this.updateStatsDisplay();
+    this.updateModeDisplay();
+    this.initializePlayAgainButton();
+    this.initializeSettings();
+    this.createHintButton();
+    this.applySettings();
   }
 
   createGrid() {
@@ -584,6 +590,7 @@ class Wordle {
       }
     });
   }
+
   applySettings() {
     if (this.darkMode) {
       document.body.classList.add("dark-mode");
@@ -617,6 +624,107 @@ class Wordle {
         this.highContrastMode = highContrastToggle.checked;
         localStorage.setItem("wordleHighContrast", this.highContrastMode);
         this.applySettings();
+      });
+    }
+  }
+
+  resetGame() {
+    this.currentRow = 0;
+    this.currentCol = 0;
+    this.gameOver = false;
+    this.guessedWords = [];
+    this.keyboardStatus = {};
+    this.hintUsed = false;
+    this.hintLetter = null;
+
+    //enable hint
+    const hintButton = document.getElementById("hint-button");
+    if (hintButton) {
+      hintButton.style.opacity = "1";
+      hintButton.style.cursor = "pointer";
+    }
+
+    //new word
+    this.targetWord =
+      this.validWords[Math.floor(Math.random() * this.validWords.length)];
+
+    //clear grid
+    this.gridContainer.innerHTML = "";
+    this.createGrid();
+
+    //clear keyboard colors
+    const keyboardButtons = document.querySelectorAll(
+      ".keyboard-button, .keyboard-button-double"
+    );
+    keyboardButtons.forEach((button) => {
+      if (button.textContent !== "ENTER" && button.textContent !== "⌫") {
+        button.style.backgroundColor = "#d3d6da";
+        button.style.color = "#000000";
+      }
+    });
+
+    const gameEndOverlay = document.getElementById("game-end-overlay");
+    if (gameEndOverlay) {
+      gameEndOverlay.style.display = "none";
+    }
+
+    //reload local storage
+    this.currentStreak =
+      parseInt(localStorage.getItem(`${this.modeKey}_streak`)) || 0;
+    this.maxStreak =
+      parseInt(localStorage.getItem(`${this.modeKey}_maxStreak`)) || 0;
+    this.updateStreakDisplay();
+  }
+
+  initializePlayAgainButton() {
+    const playAgainButton = document.getElementById("play-again-button");
+    if (playAgainButton) {
+      playAgainButton.addEventListener("click", () => {
+        this.resetGame();
+      });
+    }
+
+    const settingsButton = document.getElementById("settings-button");
+    const settingsOverlay = document.getElementById("settings-overlay");
+    const closeSettings = document.getElementById("close-settings");
+
+    if (settingsButton && settingsOverlay) {
+      settingsButton.addEventListener("click", () => {
+        settingsOverlay.style.display = "flex";
+      });
+    }
+    if (closeSettings && settingsOverlay) {
+      closeSettings.addEventListener("click", () => {
+        settingsOverlay.style.display = "none";
+      });
+    }
+    if (settingsOverlay) {
+      settingsOverlay.addEventListener("click", (e) => {
+        if (e.target === settingsOverlay) {
+          settingsOverlay.style.display = "none";
+        }
+      });
+    }
+    const statsButton = document.getElementById("stats-button");
+    const statsOverlay = document.getElementById("stats-overlay");
+    const closeStats = document.getElementById("close-stats");
+
+    if (statsButton && statsOverlay) {
+      statsButton.addEventListener("click", () => {
+        this.updateStatsDisplay();
+        statsOverlay.style.display = "flex";
+      });
+    }
+    if (closeStats && statsOverlay) {
+      closeStats.addEventListener("click", () => {
+        statsOverlay.style.display = "none";
+      });
+    }
+    if (statsOverlay) {
+      statsOverlay.addEventListener("click", (e) => {
+        if (e.target === statsOverlay) {
+          statsOverlay.style.display = "none";
+        }
       });
     }
   }
