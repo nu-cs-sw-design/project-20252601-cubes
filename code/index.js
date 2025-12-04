@@ -13,9 +13,93 @@ class Wordle {
 
     //hard coded for now, can be replaced with API or larger word list later
     this.wordList = {
-      4: ["ABLE", "BAND", "CART", "DART", "EARN"],
-      5: ["APPLE", "BANJO", "CRANE", "DANCE", "EAGLE"],
-      6: ["PLANET", "GARDEN", "FAMILY", "MARKET", "BRIDGE"],
+      4: [
+        "ABLE",
+        "BAND",
+        "CART",
+        "DART",
+        "EARN",
+        "FARM",
+        "GATE",
+        "HARD",
+        "IDEA",
+        "JUMP",
+        "KING",
+        "LAMP",
+        "MINT",
+        "NOTE",
+        "OPEN",
+        "PARK",
+        "QUAD",
+        "RING",
+        "SAND",
+        "TIME",
+        "UNIT",
+        "VASE",
+        "WIND",
+        "YARD",
+        "ZONE",
+      ],
+      5: [
+        "APPLE",
+        "BANJO",
+        "CRANE",
+        "DANCE",
+        "EAGLE",
+        "FLAME",
+        "GRAPE",
+        "HOUSE",
+        "INDEX",
+        "JELLY",
+        "KNIFE",
+        "LIGHT",
+        "MOUSE",
+        "NURSE",
+        "OCEAN",
+        "PLANT",
+        "QUICK",
+        "ROBOT",
+        "SNAKE",
+        "TABLE",
+        "ULTRA",
+        "VIVID",
+        "WATER",
+        "XENON",
+        "YACHT",
+        "ZEBRA",
+      ],
+      6: [
+        "PLANET",
+        "GARDEN",
+        "FAMILY",
+        "MARKET",
+        "BRIDGE",
+        "WINDOW",
+        "BUTTON",
+        "CANDLE",
+        "DESERT",
+        "ENGINE",
+        "FOREST",
+        "GUITAR",
+        "HUNTER",
+        "ISLAND",
+        "JOURNY",
+        "KITTEN",
+        "LANTERN",
+        "MONSTER",
+        "NUGGET",
+        "ORANGE",
+        "POCKET",
+        "QUARTZ",
+        "ROCKET",
+        "SILVER",
+        "TUNNEL",
+        "UMBREL",
+        "VALLEY",
+        "WIZARD",
+        "YELLOW",
+        "ZEBRA",
+      ],
     };
     this.validWords = this.wordList[this.wordLength] || this.wordList[5];
     this.targetWord =
@@ -548,6 +632,9 @@ class Wordle {
     const hintColor = this.highContrastMode ? "#9d4edd" : "#e85d9a";
     const absentColor = "#787c7e";
 
+    const defaultKeyColor = this.darkMode ? "#3a3a3c" : "#d3d6da";
+    const defaultKeyTextColor = this.darkMode ? "#ffffff" : "#000000";
+
     const allTiles = document.querySelectorAll(".grid-tile");
     allTiles.forEach((tile) => {
       const backgroundColor = tile.style.backgroundColor;
@@ -571,22 +658,23 @@ class Wordle {
       ".keyboard-button, .keyboard-button-double"
     );
     keyboardButtons.forEach((button) => {
-      const backgroundColor = button.style.backgroundColor;
-      if (
-        backgroundColor === "rgb(106,170,100)" ||
-        backgroundColor === "rgb(245,121,58)"
-      ) {
+      const letter = button.textContent;
+      const status = this.keyboardStatus[letter];
+      if (status === "correct") {
         button.style.backgroundColor = correctColor;
-      } else if (
-        backgroundColor === "rgb(201,180,88)" ||
-        backgroundColor === "rgb(133,192,249)"
-      ) {
+        button.style.color = "white";
+      } else if (status === "present") {
         button.style.backgroundColor = presentColor;
-      } else if (
-        backgroundColor === "rgb(157,78,221)" ||
-        backgroundColor === "rgb(232,93,154)"
-      ) {
+        button.style.color = "white";
+      } else if (status === "hint") {
         button.style.backgroundColor = hintColor;
+        button.style.color = "white";
+      } else if (status === "absent") {
+        button.style.backgroundColor = absentColor;
+        button.style.color = "white";
+      } else if (letter !== "ENTER" && letter !== "⌫") {
+        button.style.backgroundColor = defaultKeyColor;
+        button.style.color = defaultKeyTextColor;
       }
     });
   }

@@ -233,7 +233,8 @@ h1 {
 
 /* Tile bounce animation for win celebration */
 @keyframes bounce {
-  0%, 20% {
+  0%,
+  20% {
     transform: translateY(0);
   }
   40% {
@@ -531,13 +532,13 @@ body.dark-mode .grid-tile {
 
 body.dark-mode .keyboard-button,
 body.dark-mode .keyboard-button-double {
-  background-color: #818384;
+  background-color: #3a3a3c;
   color: #ffffff;
 }
 
 body.dark-mode .keyboard-button:hover,
 body.dark-mode .keyboard-button-double:hover {
-  background-color: #a0a1a2;
+  background-color: #5a5a5c;
 }
 
 body.dark-mode .overlay-content {
@@ -590,7 +591,6 @@ body.dark-mode #mode-display {
   color: #818384;
 }
 
-
 /* HIGH CONTRAST MODE STYLES */
 body.high-contrast .tile-correct,
 body.high-contrast .grid-tile[style*="background-color: rgb(106, 170, 100)"] {
@@ -605,12 +605,14 @@ body.high-contrast .grid-tile[style*="background-color: rgb(201, 180, 88)"] {
 }
 
 body.high-contrast .key-correct,
-body.high-contrast .keyboard-button[style*="background-color: rgb(106, 170, 100)"] {
+body.high-contrast
+  .keyboard-button[style*="background-color: rgb(106, 170, 100)"] {
   background-color: #f5793a !important;
 }
 
 body.high-contrast .key-present,
-body.high-contrast .keyboard-button[style*="background-color: rgb(201, 180, 88)"] {
+body.high-contrast
+  .keyboard-button[style*="background-color: rgb(201, 180, 88)"] {
   background-color: #85c0f9 !important;
 }
 
