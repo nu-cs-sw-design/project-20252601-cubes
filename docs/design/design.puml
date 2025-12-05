@@ -1,6 +1,4 @@
 @startuml
-title Wordle Game Application Design
-
 package presentation{
     +class Main{
         +{static} main(): void
@@ -418,8 +416,6 @@ package datasource{
         +saveSettings(settings: Settings): void
         +loadSettings(): Settings
     }
-
-
 }
 
 Main ..> StartScreen
