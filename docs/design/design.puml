@@ -1,146 +1,510 @@
 @startuml
+title Wordle Game Application Design
 
-package presentation {
-     class GameView {
-        + displayGrid(rows:int, cols:int)
-        + updateTile(row:int, col:int, letter:char, color:String)
-        + showMessage(message:String)
-     }
-     class KeyboardView {
-        + displayKeyboard()
-        + updateKeyColor(key:char, color:String)
-     }
-     class AnimationView {
-        + playTileFlip(row:int, col:int, durationMs:int)
-        + playRowShake(row:int, durationMs:int)
-        + playWinCelebration()
-     }
-     class MainMenuView {
-        + displayMenu()
-     }
-     class StatsView {
-        + displayStats()
-     }
-     class SettingsView {
-        + displaySettings()
-     }
+package presentation{
+    +class Main{
+        +{static} main(): void
+    }
 
-     class GameController {
-        - engine: domain.WordleGameEngine
-        - state: domain.GameState
-        - dataManager: data.DataManager
-        + startNewGame()
-        + submitGuess(guess:String)
-        + useHint()
-        + endGame()
-     }
-     class InputController {
-        - gameController: GameController
-        + handleKeyPress(key:char)
-        + handleBackspace()
-        + handleEnter()
-     }
-     class MenuController {
-        - gameController: GameController
-        + startDaily()
-        + startRandom()
-        + startThemed()
-        + showStats()
-        + showSettings()
-     }
-     class AnimationController {
-        - gameView: GameView
-        - keyboardView: KeyboardView
-        - animationView: AnimationView
-        + animateGuessResult()
-        + animateInvalidInput()
-        + animateHint(letter:char, position:int)
-     }
- }
- GameController --> GameView
- GameController --> KeyboardView
- GameController --> AnimationController
+    ~class StartScreen{
+        -wordLengthSelect: HTMLElement
+        -startButton: HTMLElement
+        +StartScreen()
+        -displayWelcomeMessage(): void
+        -displayWordLengthOptions(): void
+        -handleStartGame(): void
+    }
 
- InputController --> GameController
- MenuController --> GameController
+    ~class GameScreen{
+        -game: Game
+        -gameBoardView: GameBoardView
+        -keyboardView: KeyboardView
+        -settingsView: SettingsView
+        -statisticsView: StatisticsView
+        -toastView: ToastView
+        -gameEndView: GameEndView
+        +GameScreen(wordLength: number)
 
- AnimationController --> AnimationView
- AnimationController --> GameView
- AnimationController --> KeyboardView
-package domain {
-    class Word {
-        - text:String
-    }
-    class Letter {
-        - value:char
-        - position:int
-    }
-    class Guess {
-        - letters: List<Letter>
-        - isCorrect:boolean
-    }
-    abstract class WordleGameEngine {
-        - targetWord: Word
-        - validator: WordValidator
-        - gameState: GameState
+        +update(): void
 
-        + processGuess(guessText:String): Guess
-        + useHint(): Letter
+        -initializeGame(): void
+        -registerObservers(): void
+        -handleBackToMenu(): void
     }
-    class StandardWordle extends WordleGameEngine {
+
+    ~class GameBoardView{
+        -gridContainer: HTMLElement
+        -tiles: TileView[][]
+        -wordLength: number
+        +GameBoardView(wordLength: number)
+
+        +render(): void
+        +updateTile(row: number, col: number, letter: string): void
+        +animateTileFlip(row: number, col: number, status: TileStatus): void
+        +animateRowShake(row: number): void
+        +animateWinBounce(row: number): void
+        +clearGrid(): void
+
+        +onGuessEvaluated(result: EvaluationResult): void
+        +onGameOver(won: boolean): void
     }
-    class GameState {
-        - guesses: List<Guess>
-        - remainingAttempts:int
-        + addGuess(guess:Guess)
-        + isGameOver():boolean
+
+    ~class TileView{
+        -element: HTMLElement
+        -row: number
+        -col: number
+        +TileView(row: number, col: number)
+        +setLetter(letter: string): void
+        +setStatus(status: TileStatus): void
+        +animateFlip(): void
+        +animatePop(): void
     }
-    class WordValidator {
-        + isValidWord(wordText:String):boolean
-        + isCorrectLength(wordText:String, length:int):boolean
+
+    ~class KeyboardView{
+        -container: HTMLElement
+        -keys: Map<string, HTMLElement>
+        -keyStatuses: Map<string, KeyStatus>
+        +KeyboardView()
+
+        +render(): void
+        +updateKeyStatus(letter: string, status: KeyStatus): void
+        +highlightHintKey(letter: string): void
+        +resetAllKeys(): void
+        -handleKeyClick(letter: string): void
+
+        +onGuessEvaluated(result: EvaluationResult): void
+        +onHintUsed(letter: string): void
     }
+
+
+
+    ~class SettingsView{
+        -overlay: HTMLElement
+        -darkModeToggle: HTMLElement
+        -highContrastToggle: HTMLElement
+        -settingsRepository: SettingsRepository
+        +SettingsView(settingsRepository: SettingsRepository)
+
+        +show(): void
+        +hide(): void
+        -handleDarkModeToggle(): void
+        -handleHighContrastToggle(): void
+        -applySettings(): void
+    }
+
+    ~class StatisticsView{
+        -overlay: HTMLElement
+        -statisticsRepository: StatisticsRepository
+        +StatisticsView(statisticsRepository: StatisticsRepository)
+
+        +show(): void
+        +hide(): void
+        +render(stats: Statistics): void
+        -renderSummary(stats: Statistics): void
+        -renderGuessDistribution(stats: Statistics): void
+
+        +onGameOver(won: boolean, guesses: number): void
+    }
+
+    ~class ToastView{
+        -container: HTMLElement
+        +ToastView()
+        +showToast(message: string, duration: number): void
+        +clearToasts(): void
+    }
+
+    ~class GameEndView{
+        -overlay: HTMLElement
+        -messageElement: HTMLElement
+        -wordElement: HTMLElement
+        +GameEndView()
+
+        +showWin(message: string, targetWord: string): void
+        +showLoss(targetWord: string): void
+        +hide(): void
+        -handlePlayAgain(): void
+    }
+
+    ~class InputHandler{
+        -gameScreen: GameScreen
+        -currentInput: string
+        -enabled: boolean
+        +InputHandler(gameScreen: GameScreen)
+
+        +initialize(): void
+        +handleKeyPress(letter: string): void
+        +handleEnter(): void
+        +handleBackspace(): void
+        +enable(): void
+        +disable(): void
+    }
+}
+
+package domain{
+    +class Game{
+        -gameState: GameState
+        -wordLengthStrategy: WordLengthStrategy
+        -wordEvaluator: WordEvaluator
+        -hintService: HintService
+        -observers: GameObserver[]
+        +Game(wordLengthStrategy: WordLengthStrategy)
+
+        +submitGuess(guess: string): EvaluationResult
+        +useHint(): HintResult
+        +isGameOver(): boolean
+        +hasWon(): boolean
+        +getCurrentRow(): number
+        +getTargetWord(): string
+        +isHintUsed(): boolean
+        +reset(): void
+
+        +registerObserver(observer: GameObserver): void
+        +unregisterObserver(observer: GameObserver): void
+        -notifyObservers(event: string, data: Object): void
+
+        -validateGuess(guess: string): ValidationResult
+        -checkWinCondition(guess: string): boolean
+        -checkLossCondition(): boolean
+    }
+
+    +class GameState{
+        -targetWord: string
+        -guesses: string[]
+        -evaluations: EvaluationResult[]
+        -currentRow: number
+        -status: GameStatus
+        -hintUsed: boolean
+        -hintLetter: string
+        +GameState(targetWord: string)
+
+        +addGuess(guess: string, evaluation: EvaluationResult): void
+        +getGuesses(): string[]
+        +getCurrentRow(): number
+        +isComplete(): boolean
+        +toJSON(): Object
+        +{static} fromJSON(json: Object): GameState
+    }
+
+    +class WordEvaluator{
+        -targetWord: string
+        +WordEvaluator(targetWord: string)
+
+        +evaluate(guess: string): EvaluationResult
+        -computeLetterStatuses(guess: string): LetterStatus[]
+        -countLetterOccurrences(word: string): Map<string, number>
+    }
+
+    +class EvaluationResult{
+        -guess: string
+        -letterStatuses: LetterStatus[]
+        -isCorrect: boolean
+        +EvaluationResult(guess: string, statuses: LetterStatus[])
+
+        +getGuess(): string
+        +getLetterStatuses(): LetterStatus[]
+        +isWinningGuess(): boolean
+        +getStatusAt(index: number): LetterStatus
+    }
+
+    +class HintService{
+        -targetWord: string
+        -revealedLetters: Set<string>
+        +HintService(targetWord: string)
+
+        +getHint(evaluations: EvaluationResult[]): HintResult
+        +updateRevealedLetters(evaluation: EvaluationResult): void
+        -findUnrevealedLetter(): HintResult
+    }
+
+    +class HintResult{
+        -letter: string
+        -success: boolean
+        -message: string
+        +HintResult(letter: string, success: boolean, message: string)
+
+        +getLetter(): string
+        +isSuccess(): boolean
+        +getMessage(): string
+    }
+
+    +class Statistics{
+        -gamesPlayed: number
+        -gamesWon: number
+        -currentStreak: number
+        -maxStreak: number
+        -guessDistribution: number[]
+        +Statistics()
+
+        +recordWin(guesses: number): void
+        +recordLoss(): void
+        +getWinPercentage(): number
+        +toJSON(): Object
+        +{static} fromJSON(json: Object): Statistics
+    }
+
+    +class Settings{
+        -darkMode: boolean
+        -highContrastMode: boolean
+        +Settings()
+
+        +setDarkMode(enabled: boolean): void
+        +setHighContrastMode(enabled: boolean): void
+        +isDarkMode(): boolean
+        +isHighContrastMode(): boolean
+        +toJSON(): Object
+        +{static} fromJSON(json: Object): Settings
+    }
+
+    +interface GameObserver{
+        +{abstract} onGuessEvaluated(result: EvaluationResult): void
+        +{abstract} onGameOver(won: boolean): void
+        +{abstract} onHintUsed(letter: string): void
+    }
+
+    +interface WordLengthStrategy{
+        +{abstract} getWordLength(): number
+        +{abstract} getWordList(): string[]
+        +{abstract} getRandomWord(): string
+        +{abstract} isValidWord(word: string): boolean
+    }
+
+    +class FourLetterStrategy{
+        -wordList: string[]
+        +FourLetterStrategy()
+        +getWordLength(): number
+        +getWordList(): string[]
+        +getRandomWord(): string
+        +isValidWord(word: string): boolean
+    }
+
+    +class FiveLetterStrategy{
+        -wordList: string[]
+        +FiveLetterStrategy()
+        +getWordLength(): number
+        +getWordList(): string[]
+        +getRandomWord(): string
+        +isValidWord(word: string): boolean
+    }
+
+    +class SixLetterStrategy{
+        -wordList: string[]
+        +SixLetterStrategy()
+        +getWordLength(): number
+        +getWordList(): string[]
+        +getRandomWord(): string
+        +isValidWord(word: string): boolean
+    }
+
+
+    +interface ThemeStrategy{
+        +{abstract} getCorrectColor(): string
+        +{abstract} getPresentColor(): string
+        +{abstract} getAbsentColor(): string
+        +{abstract} getHintColor(): string
+        +{abstract} applyTheme(): void
+    }
+
+    +class LightThemeStrategy{
+        +getCorrectColor(): string
+        +getPresentColor(): string
+        +getAbsentColor(): string
+        +getHintColor(): string
+        +applyTheme(): void
+    }
+
+    +class DarkThemeStrategy{
+        +getCorrectColor(): string
+        +getPresentColor(): string
+        +getAbsentColor(): string
+        +getHintColor(): string
+        +applyTheme(): void
+    }
+
+    +class HighContrastStrategy{
+        +getCorrectColor(): string
+        +getPresentColor(): string
+        +getAbsentColor(): string
+        +getHintColor(): string
+        +applyTheme(): void
+    }
+
+
+    +enum LetterStatus{
+        CORRECT
+        PRESENT
+        ABSENT
+    }
+
+    +enum TileStatus{
+        EMPTY
+        FILLED
+        CORRECT
+        PRESENT
+        ABSENT
+        HINT
+    }
+
+    +enum KeyStatus{
+        UNUSED
+        CORRECT
+        PRESENT
+        ABSENT
+        HINT
+    }
+
+    +enum GameStatus{
+        IN_PROGRESS
+        WON
+        LOST
+    }
+
+    +class ValidationResult{
+        -valid: boolean
+        -errorMessage: string
+        +ValidationResult(valid: boolean, errorMessage: string)
+        +isValid(): boolean
+        +getErrorMessage(): string
+    }
+}
+
+package datasource{
+    +interface Repository{
+        +{abstract} save(key: string, data: Object): void
+        +{abstract} load(key: string): Object
+        +{abstract} delete(key: string): void
+        +{abstract} exists(key: string): boolean
+    }
+
+    +class LocalStorageRepository{
+        -prefix: string
+        +LocalStorageRepository(prefix: string)
+
+        +save(key: string, data: Object): void
+        +load(key: string): Object
+        +delete(key: string): void
+        +exists(key: string): boolean
+        -getFullKey(key: string): string
+    }
+
+
+
+    +class GameStateRepository{
+        -repository: Repository
+        -modeKey: string
+        +GameStateRepository(wordLength: number)
+
+        +saveGameState(state: GameState): void
+        +loadGameState(): GameState
+        +deleteGameState(): void
+        +hasActiveGame(): boolean
+    }
+
+    +class StatisticsRepository{
+        -repository: Repository
+        -modeKey: string
+        +StatisticsRepository(wordLength: number)
+
+        +saveStatistics(stats: Statistics): void
+        +loadStatistics(): Statistics
+        +updateAfterWin(guesses: number): void
+        +updateAfterLoss(): void
+    }
+
+
+    +class SettingsRepository{
+        -repository: Repository
+        +SettingsRepository()
+
+        +saveSettings(settings: Settings): void
+        +loadSettings(): Settings
+    }
+
 
 }
-GameController --> domain.WordleGameEngine
-GameController --> domain.GameState
 
-domain.WordleGameEngine --> data.DataManager : uses
+' ==========================================
+' RELATIONSHIPS
+' ==========================================
 
-package data {
-    class WordRepository {
-        + getRandomWord(length:int): String
-        + getDailyWord(): String
-        + getThemedWord(theme:String): String
-        + isValidWord(wordText:String): boolean
-    }
+' Main dependencies
+Main ..> StartScreen
+Main ..> GameScreen
+Main ..> LocalStorageRepository
 
-    class GameStateRepository {
-        + save(state:domain.GameState)
-        + load(): domain.GameState
-        + hasSavedGame(): boolean
-    }
+' StartScreen dependencies
+StartScreen ..> GameScreen
 
-    class StatisticsRepository {
-        + saveStats()
-        + loadStats()
-    }
+' GameScreen dependencies
+GameScreen --> Game
+GameScreen --> GameBoardView
+GameScreen --> KeyboardView
+GameScreen --> SettingsView
+GameScreen --> StatisticsView
+GameScreen --> ToastView
+GameScreen --> GameEndView
+GameScreen --> InputHandler
+GameScreen --> GameStateRepository
+GameScreen --> StatisticsRepository
+GameScreen ..|> GameObserver
 
-    class SettingsRepository {
-            + saveSettings()
-            + loadSettings()
-    }
+' View dependencies
+GameBoardView --> "*" TileView
+GameBoardView ..|> GameObserver
 
-     class DataManager {
-        - wordRepo: WordRepository
-        - gameStateRepo: GameStateRepository
-        - statsRepo: StatisticsRepository
-        - settingsRepo: SettingsRepository
+KeyboardView ..|> GameObserver
 
-        + getNewTargetWord(mode:String, theme:String, length:int): String
-        + saveGame(state:domain.GameState)
-        + loadGame(): domain.GameState
-        }
-}
-GameController --> data.DataManager
+SettingsView --> SettingsRepository
+SettingsView --> ThemeStrategy
+
+StatisticsView --> StatisticsRepository
+StatisticsView ..|> GameObserver
+
+GameEndView ..> GameScreen
+
+InputHandler --> GameScreen
+
+' Game dependencies
+Game --> GameState
+Game --> WordEvaluator
+Game --> HintService
+Game --> WordLengthStrategy
+Game --> "*" GameObserver
+Game ..> EvaluationResult
+Game ..> ValidationResult
+
+' Evaluator dependencies
+WordEvaluator ..> EvaluationResult
+WordEvaluator ..> LetterStatus
+
+EvaluationResult --> "*" LetterStatus
+
+' Hint dependencies
+HintService ..> HintResult
+HintService ..> EvaluationResult
+
+' State dependencies
+GameState --> GameStatus
+GameState --> "*" EvaluationResult
+
+' Strategy implementations
+WordLengthStrategy <|.. FourLetterStrategy
+WordLengthStrategy <|.. FiveLetterStrategy
+WordLengthStrategy <|.. SixLetterStrategy
+
+ThemeStrategy <|.. LightThemeStrategy
+ThemeStrategy <|.. DarkThemeStrategy
+ThemeStrategy <|.. HighContrastStrategy
+
+' Repository implementations
+Repository <|.. LocalStorageRepository
+
+GameStateRepository --> Repository
+GameStateRepository ..> GameState
+
+StatisticsRepository --> Repository
+StatisticsRepository ..> Statistics
+
+SettingsRepository --> Repository
+SettingsRepository ..> Settings
 
 @enduml
