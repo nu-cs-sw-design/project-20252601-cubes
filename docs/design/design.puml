@@ -422,19 +422,12 @@ package datasource{
 
 }
 
-' ==========================================
-' RELATIONSHIPS
-' ==========================================
-
-' Main dependencies
 Main ..> StartScreen
 Main ..> GameScreen
 Main ..> LocalStorageRepository
 
-' StartScreen dependencies
 StartScreen ..> GameScreen
 
-' GameScreen dependencies
 GameScreen --> Game
 GameScreen --> GameBoardView
 GameScreen --> KeyboardView
@@ -447,7 +440,6 @@ GameScreen --> GameStateRepository
 GameScreen --> StatisticsRepository
 GameScreen ..|> GameObserver
 
-' View dependencies
 GameBoardView --> "*" TileView
 GameBoardView ..|> GameObserver
 
@@ -460,10 +452,8 @@ StatisticsView --> StatisticsRepository
 StatisticsView ..|> GameObserver
 
 GameEndView ..> GameScreen
-
 InputHandler --> GameScreen
 
-' Game dependencies
 Game --> GameState
 Game --> WordEvaluator
 Game --> HintService
@@ -471,22 +461,18 @@ Game --> WordLengthStrategy
 Game --> "*" GameObserver
 Game ..> EvaluationResult
 Game ..> ValidationResult
-
-' Evaluator dependencies
 WordEvaluator ..> EvaluationResult
 WordEvaluator ..> LetterStatus
 
 EvaluationResult --> "*" LetterStatus
 
-' Hint dependencies
 HintService ..> HintResult
 HintService ..> EvaluationResult
 
-' State dependencies
 GameState --> GameStatus
 GameState --> "*" EvaluationResult
 
-' Strategy implementations
+
 WordLengthStrategy <|.. FourLetterStrategy
 WordLengthStrategy <|.. FiveLetterStrategy
 WordLengthStrategy <|.. SixLetterStrategy
@@ -495,7 +481,7 @@ ThemeStrategy <|.. LightThemeStrategy
 ThemeStrategy <|.. DarkThemeStrategy
 ThemeStrategy <|.. HighContrastStrategy
 
-' Repository implementations
+
 Repository <|.. LocalStorageRepository
 
 GameStateRepository --> Repository
